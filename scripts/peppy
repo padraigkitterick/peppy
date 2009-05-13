@@ -6,7 +6,7 @@ specified passphrase or a 64-character sequence key.
 
 For further information see <http://www.grc.com/ppp.htm>
 
-Copyright (C) 2009 Padraig Kitterick <p.kitterick@psych.york.ac.uk>
+Copyright (C) 2009 Padraig Kitterick <info@padraigkitterick.com>
 All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from hashlib import sha256
 import peppy
 
 if __name__ == '__main__':
-    usage = "usage: %prog [options] [-k KEY|-p PHRASE]"
+    usage = "usage: %prog [options] [-k KEY|-p PHRASE|-r]"
     version = "%prog 0.1a"
     parser = OptionParser(usage=usage, version=version)
     
@@ -39,6 +39,8 @@ if __name__ == '__main__':
                       help="a %d-character hex sequence" % peppy.SHA256_DIGEST_SIZE, metavar="KEY")
     group.add_option("-p", dest="passphrase", metavar="PHRASE",
                       help="passphrase with which to create a KEY")
+    group.add_option("-r", dest="randkey", action="store_true",
+                     help="generate a pseudo-random key")
     parser.add_option_group(group)
     
     
@@ -57,9 +59,13 @@ if __name__ == '__main__':
     
     (options, args) = parser.parse_args()
     
-    # We need a key or a passphrase
-    if (options.key and options.passphrase) or (not options.key and not options.passphrase):
-        parser.error("Please specify either -k or -p."
+    # We need a key, a passphrase, or the random key flag
+    mandatory = [options.key, options.passphrase, options.randkey]
+    if (not options.key and not options.passphrase and not options.randkey):
+        parser.error("Please specify either -k, -p, or -r."
+                     "\n\nSee --help for usage information.")
+    elif len(filter(None, mandatory)) > 1:
+        parser.error("Please specify only one of either -k, -p, or -r."
                      "\n\nSee --help for usage information.")
     
     if options.page and options.startnum is not 0:
@@ -70,13 +76,16 @@ if __name__ == '__main__':
     if options.passphrase:
         key = sha256(options.passphrase).hexdigest()
         key_bytes = peppy.hex2bytes(key)
-    else:
+    elif options.key:
         key_bytes = peppy.hex2bytes(options.key)
         if key_bytes:
             key = options.key
         
         if not key:
             sys.exit("Supplied key was not a valid %d character hex key." % peppy.SHA256_DIGEST_SIZE)
+    else:
+        key, key_bytes = peppy.generate_random_key()
+        options.verbose = True
     
     if options.chars:
         chars = options.chars

@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import os.path
 from distutils.core import setup
 
 classifiers = """\
@@ -18,8 +19,8 @@ setup(name="peppy",
       classifiers = filter(None, classifiers.split("\n")),
       description="Python implementation of Perfect Paper Passwords (PPP)",
       author="Padraig Kitterick",
-      author_email="p.kitterick@psych.york.ac.uk",
-      url="http://www.padraigkitterick.com/code/ppp/",
+      author_email="info@padraigkitterick.com",
+      url="http://www.padraigkitterick.com/code/",
       license="GNU GPL",
       packages = ["peppy"],
       scripts=[os.path.join('scripts','peppy')],

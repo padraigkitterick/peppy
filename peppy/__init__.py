@@ -6,7 +6,7 @@ specified passphrase or a 64-character sequence key.
 
 For further information see <http://www.grc.com/ppp.htm>
 
-Copyright (C) 2009 Padraig Kitterick <p.kitterick@psych.york.ac.uk>
+Copyright (C) 2009 Padraig Kitterick <info@padraigkitterick.com>
 All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
+import random
 import aes
 
 SHA256_DIGEST_SIZE = 64
@@ -32,6 +33,7 @@ MAX_INT = (2 ** 128) - 1 # maximum possible passcode number
 CHARACTER_ARRAY = "23456789!@#%+=:?abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPRSTUVWXYZ"
 
 def hex2bytes(hexstr):
+    """Convert from a 64-character hex string to 32 8-bit integers"""
     if len(hexstr) is not SHA256_DIGEST_SIZE:
         return None
     
@@ -43,7 +45,18 @@ def hex2bytes(hexstr):
             return None
     return bytes
 
+def generate_random_key():
+    """Generate a random key as a hex strings and byte list"""
+    key_bytes = []
+    for i in range(SHA256_DIGEST_SIZE/2):
+        key_bytes.append(random.randrange(256))
+    
+    key = ''.join(["%02x" % x for x in key_bytes])
+    
+    return key, key_bytes
+
 def pack128(n):
+    """Format a 128-bit integer as a list of 16 bytes"""
     if not 0 <= n <= MAX_INT:
         raise IndexError('integer %r cannot be packed into 128 bits.' % hex(n))
     
@@ -56,6 +69,7 @@ def pack128(n):
     return words
 
 def unpack128(words):
+    """Format a list of 16 bytes as a 128-bit integer"""
     n = 0
     for i, num in enumerate(words):
         word = num
@@ -65,6 +79,7 @@ def unpack128(words):
     return n
 
 def create_passcodes(key, chars, startnum, numpass, passlen):
+    """Generate passcodes from the provided key and integer counter."""
     num_chars = len(chars)
     passcode = [" "] * passlen
     codes = []
@@ -83,6 +98,7 @@ def create_passcodes(key, chars, startnum, numpass, passlen):
     return codes
 
 def display_codes(codes, page=None, linelen=7):
+    """Format a list of codes in a pretty-printed table."""
     if len(codes) < linelen:
         linelen = len(codes)
     
