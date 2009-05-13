@@ -8,10 +8,8 @@ Intended Audience :: System Administrators
 License :: OSI Approved :: GNU General Public License (GPL)
 Natural Language :: English
 Programming Language :: Python
-Programming Language :: C
 Topic :: Security
 Topic :: Security :: Cryptography
-Topic :: Utilities
 Operating System :: OS Independent
 
 """
@@ -24,8 +22,5 @@ setup(name="peppy",
       url="http://www.padraigkitterick.com/code/ppp/",
       license="GNU GPL",
       packages = ["peppy"],
-      ext_modules=[Extension('peppy._aes',
-                             sources=[os.path.join('peppy', '_aes.c')],
-                             )],
       scripts=[os.path.join('scripts','peppy')],
       )
