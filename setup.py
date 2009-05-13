@@ -7,6 +7,7 @@ Development Status :: 4 - Beta
 Environment :: Console
 Intended Audience :: System Administrators
 License :: OSI Approved :: GNU General Public License (GPL)
+License :: OSI Approved :: Apache Software License
 Natural Language :: English
 Programming Language :: Python
 Topic :: Security
@@ -21,7 +22,6 @@ setup(name="peppy",
       author="Padraig Kitterick",
       author_email="info@padraigkitterick.com",
       url="http://www.padraigkitterick.com/code/",
-      license="GNU GPL",
       packages = ["peppy"],
       scripts=[os.path.join('scripts','peppy')],
       )
